@@ -70,10 +70,10 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
+    <div className="flex min-h-screen bg-gray-50 w-full font-sans">
       <Sidebar />
 
-      <main className="flex-1 md:ml-64 p-8 transition-all duration-300">
+      <main className="flex-1 p-4 md:p-8 md:ml-64 transition-all duration-300">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header Section */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">

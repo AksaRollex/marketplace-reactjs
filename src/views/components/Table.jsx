@@ -6,7 +6,7 @@ export default function Table({
   data,
   renderRow,
   loading,
-  emptyMessage = "No data available",
+  emptyMessage = "No data available", 
 }) {
   if (loading) {
     return (
