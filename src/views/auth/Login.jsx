@@ -1,18 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import api from "../../libs/axios";
 import {
   Mail,
   Lock,
   Eye,
   EyeOff,
-  ArrowRight,
   Facebook,
   Chrome,
   ArrowLeft,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const { mutate: login, isPending } = useMutation({
+    mutationFn: (data) => api.post("auth/login", data),
+
+    onSuccess: (res) => {
+      localStorage.setItem("token", res.data.token);
+      navigate("/");
+      queryClient.invalidateQueries({
+        queryKey: ["auth", "user"],
+      });
+    },
+
+    onError: (error) => {
+      const message =
+        error?.response?.data?.message || "Terjadi kesalahan saat login";
+      setErrorMessage(message);
+    },
+  });
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -20,7 +45,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login attempt:", formData);
+    login(formData);
   };
 
   return (
@@ -228,5 +253,4 @@ const Login = () => {
     </div>
   );
 };
-
 export default Login;

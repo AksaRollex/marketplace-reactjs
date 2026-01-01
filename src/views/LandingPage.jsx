@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import api from "../libs/axios";
+import { rupiah } from "../libs/utils";
 
 // Product images generated
 import headphoneImg from "../../src/assets/images/headphone.png";
@@ -85,6 +87,21 @@ const LandingPage = () => {
       category: "Travel",
     },
   ];
+
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get("products");
+        setProducts(response.data.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  console.log(products, 222);
 
   const allProducts = Array(8)
     .fill(null)
@@ -257,16 +274,24 @@ const LandingPage = () => {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {allProducts.map((product) => (
+            {products.map((product) => (
               <div
                 key={product.id}
                 className="group bg-white rounded-xl border border-gray-100 hover:border-indigo-100 hover:shadow-lg transition-all"
               >
                 <div className="aspect-[4/3] bg-gray-100 rounded-t-xl overflow-hidden relative">
                   {/* Fallback image for All Products since we didn't generate these */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                    <Smartphone className="w-12 h-12 text-gray-300" />
-                  </div>
+                  {product.image ? (
+                    <img
+                      src={`http://127.0.0.1:8000/${product.image}`}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                      <Smartphone className="w-12 h-12 text-gray-300" />
+                    </div>
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-900 mb-1 truncate">
@@ -275,12 +300,13 @@ const LandingPage = () => {
                   <div className="flex items-center gap-1 mb-3">
                     <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
                     <span className="text-xs text-gray-500">
-                      {product.rating} | {product.sold} terjual
+                      {product.rating}
+                      {/* | {products.sold} terjual */}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-indigo-600">
-                      {product.price}
+                      {rupiah(product.price)}
                     </span>
                     <button className="text-sm font-medium text-gray-500 hover:text-indigo-600">
                       Lihat

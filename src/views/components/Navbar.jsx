@@ -16,12 +16,16 @@ import {
   Utensils,
   Car,
 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import api from "../../libs/axios";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,11 +35,32 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Always show background if not on home page
   const navbarClasses =
     isHome && !scrolled
       ? "bg-transparent py-5"
       : "bg-white/90 backdrop-blur-md shadow-md py-3";
+
+  const logout = useMutation({
+    mutationFn: () => api.post("/auth/logout"),
+    onSuccess: () => {
+      localStorage.removeItem("token");
+      navigate("/login");
+    },
+  });
+
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      api
+        .get("/auth/me")
+        .then((res) => {
+          setUser(res.data.data);
+        })
+        .catch(() => {
+          setUser(null);
+        });
+    }
+  }, []);
 
   return (
     <nav
@@ -94,18 +119,35 @@ const Navbar = () => {
             <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
           </Link>
           <div className="h-6 w-px bg-gray-200"></div>
-          <Link
-            to="/login"
-            className="px-5 py-2 text-gray-600 font-medium hover:text-indigo-600 transition-colors"
-          >
-            Masuk
-          </Link>
-          <Link
-            to="/register"
-            className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-105 active:scale-95 transition-all"
-          >
-            Daftar
-          </Link>
+
+          {user ? (
+            <>
+              <span className="text-gray-700 font-medium">
+                Halo, {user.name}
+              </span>
+              <button
+                onClick={() => logout.mutate()}
+                className="px-4 py-2 text-red-600 hover:text-red-700"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="px-5 py-2 text-gray-600 font-medium hover:text-indigo-600 transition-colors"
+              >
+                Masuk
+              </Link>
+              <Link
+                to="/register"
+                className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-105 active:scale-95 transition-all"
+              >
+                Daftar
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}

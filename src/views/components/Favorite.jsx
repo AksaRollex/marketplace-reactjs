@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 import { Star, ShoppingCart, Heart, ArrowRight, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Mock Data
-import headphoneImg from "../assets/images/headphone.png";
-import smartwatchImg from "../assets/images/smartwatch.png";
-import shoesImg from "../assets/images/shoes.png";
-import backpackImg from "../assets/images/backpack.png";
+import headphoneImg from "../../assets/images/headphone.png";
+import smartwatchImg from "../../assets/images/smartwatch.png";
+import shoesImg from "../../assets/images/shoes.png";
+import backpackImg from "../../assets/images/backpack.png";
 
 const Favorite = () => {
   const [favorites, setFavorites] = useState([

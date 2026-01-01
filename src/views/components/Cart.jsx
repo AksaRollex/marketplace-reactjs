@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 import { Trash2, Plus, Minus, ArrowRight, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Dummy data for cart
-import headphoneImg from "../assets/images/headphone.png";
-import smartwatchImg from "../assets/images/smartwatch.png";
+import headphoneImg from "../../assets/images/headphone.png";
+import smartwatchImg from "../../assets/images/smartwatch.png";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import api from "../../libs/axios";
 import { Link } from "react-router-dom";
 import {
   User,
@@ -11,8 +13,10 @@ import {
   Chrome,
   ArrowLeft,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -23,8 +27,20 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Register attempt:", formData);
+    register(formData);
   };
+
+  const { mutate: register, isPending } = useMutation({
+    mutationFn: (data) => api.post("auth/register", data),
+
+    onSuccess: () => {
+      navigate("/");
+    },
+
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   return (
     <div className="min-h-screen bg-white flex">
